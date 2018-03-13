@@ -1,9 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import Puzzle from './components/puzzle';
 
 const App = () => {
-  return <div>Here's my app!</div>
+  return (
+    <div>    
+      <Puzzle />
+    </div>)
 }
 
 
