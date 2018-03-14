@@ -1,5 +1,6 @@
 export const ADJUST_TIME = "adjust_time";
-export const RESET_TIME = "reset_time"
+export const SET_TIME = "set_time";
+export const HANDLE_SUCCESSFUL_GUESS = "handle_successful_guess";
 
 export function adjustTime(changeAmount){
   return {
@@ -8,10 +9,16 @@ export function adjustTime(changeAmount){
   }
 }
 
-
-export function resetTime(initialTimeAmount){
+export function setTime(timeAmount){
   return {
-    type: RESET_TIME,
-    payload: initialTimeAmount
+    type: SET_TIME,
+    payload: timeAmount
+  }
+}
+
+export function handleSuccessfulGuess(guess){
+  return {
+    type: HANDLE_SUCCESSFUL_GUESS,
+    payload: guess
   }
 }

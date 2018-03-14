@@ -5,7 +5,7 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-//import actions
+import { adjustTime, setTime } from '../actions';
 
 
 class Puzzle extends React.Component {
@@ -21,11 +21,16 @@ class Puzzle extends React.Component {
   componentDidMount(){
     //set clock to maxTime, then setInterval for countdown
     //maxTime will eventually be props, but hard-code it for now.
-    
+    this.props.setTime(60 * 1000);
+    this.countdown = setInterval(this.props.adjustTime, 
+    1000, -1000)
   }
 
-  componentWillUnmount(){
-    //clearInterval
+  componentDidUpdate(){
+    //clearInterval if time has reached zero
+    if (this.props.settings.time === 0){
+    clearInterval(this.countdown);
+    }
   }
 
   handleInputChange(event){
@@ -34,16 +39,24 @@ class Puzzle extends React.Component {
 
   handleFormSubmit(event){
     event.preventDefault();
+    let sanitizedInputWord = this.state.inputWord.trim().toLowerCase();
+    if (this.validateGuess(sanitizedInputWord)) {
+      return true;
+    }
     //check if this.state.inputWord matches an array item in current license plate
     //if so, grab next word
     //else, show error (generic for now)
   }
 
+  validateGuess(guess){
+    //add more specific handling later. eg different error messages for "not in dictionary" or "wrong letters"
+    return this.props.licensePlate.currentLicensePlate.solutions.includes(guess);
+  }
+
   render(){
     return (
       <div>
-        {/* {this.props.currentLicensePlate} */}
-        <h1>DKP</h1>
+        <h1>{this.props.licensePlates.currentLicensePlate.letters}</h1>
         <form>
           <input type="text" 
             value={this.state.inputWord} 
@@ -59,11 +72,14 @@ class Puzzle extends React.Component {
 }
 
 function mapStateToProps(state) {
-  return { currentLicensePlate }
+  return { 
+    licensePlates: state.licensePlates,
+    settings: state.settings
+   }
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ adjustTime }, dispatch)
+  return bindActionCreators({ adjustTime, setTime }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps) (Puzzle);

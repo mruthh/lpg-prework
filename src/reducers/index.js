@@ -1,8 +1,10 @@
 import { combineReducers } from 'redux';
-import timeReducer from './reducer-time';
+import settingsReducer from './reducer-settings';
+import licensePlatesReducer from './reducer-license-plates';
 
 const rootReducer = combineReducers({
-  remainingTime: timeReducer
+  licensePlates: licensePlatesReducer,
+  settings: settingsReducer
 });
 
 export default rootReducer;
