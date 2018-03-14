@@ -5,7 +5,7 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { adjustTime, setTime } from '../actions';
+import { adjustTime, setTime, handleSuccessfulGuess } from '../actions';
 
 
 class Puzzle extends React.Component {
@@ -39,18 +39,19 @@ class Puzzle extends React.Component {
 
   handleFormSubmit(event){
     event.preventDefault();
-    let sanitizedInputWord = this.state.inputWord.trim().toLowerCase();
-    if (this.validateGuess(sanitizedInputWord)) {
-      return true;
+    let sanitizedInputWord = this.state.inputWord.toLowerCase();
+    let currentLicensePlate = this.props.licensePlates.currentLicensePlate;
+    if (currentLicensePlate.solutions.includes(sanitizedInputWord)) {
+      this.props.handleSuccessfulGuess({
+        letters: currentLicensePlate.letters,
+        guess: sanitizedInputWord
+      });
+    } else {
+      this.setState({inputWord: 'Nope'})
     }
     //check if this.state.inputWord matches an array item in current license plate
     //if so, grab next word
     //else, show error (generic for now)
-  }
-
-  validateGuess(guess){
-    //add more specific handling later. eg different error messages for "not in dictionary" or "wrong letters"
-    return this.props.licensePlate.currentLicensePlate.solutions.includes(guess);
   }
 
   render(){
@@ -79,7 +80,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ adjustTime, setTime }, dispatch)
+  return bindActionCreators({ adjustTime, setTime, handleSuccessfulGuess }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps) (Puzzle);

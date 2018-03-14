@@ -63063,4 +63063,4 @@ export const dictionary = `a
   zwieback
   zygote
   zygotes`
-  .split('\n');
+  .split('\n').map( word => word.trim());

@@ -10,7 +10,8 @@ const defaultLicensePlates = {
 export default function (state = defaultLicensePlates, action) {
   switch (action.type){
     case (HANDLE_SUCCESSFUL_GUESS): {
-      //move guess (action.payload) to history
+      //move guess to history
+      //TODO: group together guesses on same letters
       let newHistory = [...state.history, action.payload];
       
       //take first element from queue as currentlicenseplate
