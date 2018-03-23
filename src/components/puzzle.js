@@ -5,7 +5,7 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { adjustTime, setTime, handleSuccessfulGuess } from '../actions';
+import { adjustTime, setTime, moveToNextLicensePlate } from '../actions';
 
 
 class Puzzle extends React.Component {
@@ -18,69 +18,76 @@ class Puzzle extends React.Component {
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
   }
 
-  componentDidMount(){
+  componentDidMount() {
     //set clock to maxTime, then setInterval for countdown
     //maxTime will eventually be props, but hard-code it for now.
     this.props.setTime(60 * 1000);
-    this.countdown = setInterval(this.props.adjustTime, 
-    1000, -1000)
+    this.countdown = setInterval(this.props.adjustTime,
+      1000, -1000)
   }
 
-  componentDidUpdate(){
+  componentDidUpdate() {
     //clearInterval if time has reached zero
-    if (this.props.settings.time === 0){
-    clearInterval(this.countdown);
+    if (this.props.settings.time === 0) {
+      clearInterval(this.countdown);
     }
   }
 
-  handleInputChange(event){
-    this.setState({inputWord: event.target.value})
+  handleInputChange(event) {
+    this.setState({ inputWord: event.target.value })
   }
 
-  handleFormSubmit(event){
+  handleFormSubmit(event) {
     event.preventDefault();
     let sanitizedInputWord = this.state.inputWord.toLowerCase();
     let currentLicensePlate = this.props.licensePlates.currentLicensePlate;
     if (currentLicensePlate.solutions.includes(sanitizedInputWord)) {
-      this.props.handleSuccessfulGuess({
+      this.props.moveToNextLicensePlate({
         letters: currentLicensePlate.letters,
         guess: sanitizedInputWord
       });
     } else {
-      this.setState({inputWord: 'Nope'})
+      this.setState({ inputWord: 'Nope' })
     }
     //check if this.state.inputWord matches an array item in current license plate
     //if so, grab next word
     //else, show error (generic for now)
   }
 
-  render(){
+  handleSkip(event){
+    event.preventDefault();
+    this.props.moveToNextLicensePlate({
+      letters: this.props.licensePlates.currentLicensePlate.letters,
+      guess: ''
+    });
+  }
+  render() {
     return (
       <div>
         <h1>{this.props.licensePlates.currentLicensePlate.letters}</h1>
         <form>
-          <input type="text" 
-            value={this.state.inputWord} 
-            onChange={this.handleInputChange} />
-            <button disabled="true">Skip</button>
-            <button onClick={this.handleFormSubmit}>
-              Solve
-            </button>
+          <input type="text"
+            value={this.state.inputWord}
+            onChange={this.handleInputChange}
+            disabled={this.props.settings.time === 0}
+          />
+          <button onClick={this.handleFormSubmit}>Skip</button>
+        <button onClick={this.handleFormSubmit}>Solve</button>
         </form>
-      </div>
+      </div >
     )
   }
 }
 
 function mapStateToProps(state) {
-  return { 
+  return {
     licensePlates: state.licensePlates,
     settings: state.settings
-   }
+  }
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ adjustTime, setTime, handleSuccessfulGuess }, dispatch)
+  return bindActionCreators({ adjustTime, setTime, moveToNextLicensePlate }, dispatch)
 }
 
-export default connect(mapStateToProps, mapDispatchToProps) (Puzzle);
+export default connect(mapStateToProps, mapDispatchToProps)(Puzzle);

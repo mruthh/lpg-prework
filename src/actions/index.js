@@ -1,7 +1,6 @@
 export const ADJUST_TIME = "adjust_time";
 export const SET_TIME = "set_time";
-export const HANDLE_SUCCESSFUL_GUESS = "handle_successful_guess";
-export const SKIP_LICENSE_PLATE = "skip_license_plate";
+export const MOVE_TO_NEXT_LICENSE_PLATE = "move_to_next_license_plate";
 
 export function adjustTime(changeAmount){
   return {
@@ -17,13 +16,9 @@ export function setTime(timeAmount){
   }
 }
 
-export function handleSuccessfulGuess(guess){
+export function moveToNextLicensePlate(guess){
   return {
-    type: HANDLE_SUCCESSFUL_GUESS,
+    type: MOVE_TO_NEXT_LICENSE_PLATE,
     payload: guess
   }
-}
-
-export default function skipLicensePlate(){
-  return 
 }
